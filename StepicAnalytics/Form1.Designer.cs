@@ -32,13 +32,18 @@ namespace StepicAnalytics
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.textBoxReferralTrafficText = new System.Windows.Forms.TextBox();
             this.textBoxReferralTrafficData = new System.Windows.Forms.TextBox();
             this.textBoxPaymentsText = new System.Windows.Forms.TextBox();
             this.textBoxPaymentsData = new System.Windows.Forms.TextBox();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartViews = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.textBoxRefundsText = new System.Windows.Forms.TextBox();
             this.textBoxRefundsData = new System.Windows.Forms.TextBox();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            ((System.ComponentModel.ISupportInitialize)(this.chartViews)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -77,22 +82,24 @@ namespace StepicAnalytics
             this.textBoxPaymentsData.Size = new System.Drawing.Size(70, 20);
             this.textBoxPaymentsData.TabIndex = 3;
             // 
-            // chart1
+            // chartViews
             // 
             chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            this.chartViews.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(13, 12);
-            this.chart1.Name = "chart1";
+            this.chartViews.Legends.Add(legend1);
+            this.chartViews.Location = new System.Drawing.Point(13, 12);
+            this.chartViews.Name = "chartViews";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
+            series1.MarkerSize = 3;
             series1.Name = "Просмотры";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(490, 412);
-            this.chart1.TabIndex = 4;
-            this.chart1.Text = "chart1";
-            this.chart1.Click += new System.EventHandler(this.chart1_Click);
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Int64;
+            this.chartViews.Series.Add(series1);
+            this.chartViews.Size = new System.Drawing.Size(442, 259);
+            this.chartViews.TabIndex = 4;
+            this.chartViews.Text = "chart1";
             // 
             // textBoxRefundsText
             // 
@@ -111,14 +118,32 @@ namespace StepicAnalytics
             this.textBoxRefundsData.Size = new System.Drawing.Size(70, 20);
             this.textBoxRefundsData.TabIndex = 6;
             // 
+            // chart1
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
+            this.chart1.Location = new System.Drawing.Point(509, 12);
+            this.chart1.Name = "chart1";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            series2.Legend = "Legend1";
+            series2.Name = "PieUtmMarks";
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(545, 410);
+            this.chart1.TabIndex = 7;
+            this.chart1.Text = "chart1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1084, 661);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.textBoxRefundsData);
             this.Controls.Add(this.textBoxRefundsText);
-            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.chartViews);
             this.Controls.Add(this.textBoxPaymentsData);
             this.Controls.Add(this.textBoxPaymentsText);
             this.Controls.Add(this.textBoxReferralTrafficData);
@@ -126,6 +151,7 @@ namespace StepicAnalytics
             this.Name = "MainForm";
             this.Text = "Аналитика степика";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.chartViews)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -138,9 +164,10 @@ namespace StepicAnalytics
         private System.Windows.Forms.TextBox textBoxReferralTrafficData;
         private System.Windows.Forms.TextBox textBoxPaymentsText;
         private System.Windows.Forms.TextBox textBoxPaymentsData;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartViews;
         private System.Windows.Forms.TextBox textBoxRefundsText;
         private System.Windows.Forms.TextBox textBoxRefundsData;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }
 }
 
