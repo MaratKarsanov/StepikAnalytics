@@ -82,6 +82,64 @@ namespace StepicAnalytics
             return dayViews;
         }
 
+        Dictionary<string, int> FindUtmsCount(string fileName, string utmName)
+        {
+            var utmIndex = 0;
+            switch (utmName)
+            {
+                case "source":
+                    utmIndex = 6; 
+                    break;
+                case "medium":
+                    utmIndex = 7;
+                    break;
+                case "campaign":
+                    utmIndex = 8;
+                    break;
+            }
+            var utmCount = new Dictionary<string, int>();
+            var sr = new StreamReader(fileName);
+            var hstr = sr.ReadLine();
+            var str = hstr.Split(',');
+            while (true)
+            {
+                hstr = sr.ReadLine();
+                if (hstr != null)
+                {
+                    str = hstr.Split(',');
+                    if (!utmCount.ContainsKey(str[utmIndex]))
+                        utmCount.Add(str[utmIndex], 1);
+                    else
+                        utmCount[str[utmIndex]]++;
+                }
+                else
+                    break;
+            }
+            sr.Close();
+            return utmCount;
+        }
+
+        void DrawUtmSourcePie()
+        {
+            var utmCount = FindUtmsCount("referral-traffic.csv", "source");
+            foreach (var mark in utmCount)
+                chartSourcePie.Series[0].Points.AddXY(mark.Key, mark.Value);
+        }
+
+        void DrawUtmMediumPie()
+        {
+            var utmCount = FindUtmsCount("referral-traffic.csv", "medium");
+            foreach (var mark in utmCount)
+                chartMediumPie.Series[0].Points.AddXY(mark.Key, mark.Value);
+        }
+
+        void DrawUtmCampaignPie()
+        {
+            var utmCount = FindUtmsCount("referral-traffic.csv", "campaign");
+            foreach (var mark in utmCount)
+                chartCampaignPie.Series[0].Points.AddXY(mark.Key, mark.Value);
+        }
+
         void DrawViewsCount()
         {
             var dayViews = FindDayViewsCount("referral-traffic.csv");
@@ -99,6 +157,10 @@ namespace StepicAnalytics
             textBoxPaymentsData.Text = Convert.ToString(uniqueUsersPayments.Count);
             textBoxRefundsData.Text = Convert.ToString(FindRefundsCount("payments.csv"));
             DrawViewsCount();
+            DrawUtmMediumPie();
+            DrawUtmSourcePie();
+            DrawUtmCampaignPie();
+            //chartViews.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
         }
 
         private void textBoxReferralTrafficData_TextChanged(object sender, EventArgs e)
