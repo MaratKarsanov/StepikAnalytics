@@ -82,70 +82,73 @@ namespace StepicAnalytics
             return dayViews;
         }
 
-        Dictionary<string, int> FindUtmsCount(string fileName, string utmName)
+        Dictionary<string, int> FindChartData(string fileName, string columnName)
         {
-            var utmIndex = 0;
-            switch (utmName)
+            var index = 0;
+            switch (columnName)
             {
+                case "sources":
+                    index = 16;
+                    break;
                 case "source":
-                    utmIndex = 6; 
+                    index = 6; 
                     break;
                 case "medium":
-                    utmIndex = 7;
+                    index = 7;
                     break;
                 case "campaign":
-                    utmIndex = 8;
+                    index = 8;
                     break;
                 case "firstClickSource":
-                    utmIndex = 17;
+                    index = 17;
                     break;
                 case "firstClickMedium":
-                    utmIndex = 18;
+                    index = 18;
                     break;
                 case "firstClickCampaign":
-                    utmIndex = 19;
+                    index = 19;
                     break;
                 case "lastClickSource":
-                    utmIndex = 22;
+                    index = 22;
                     break;
                 case "lastClickMedium":
-                    utmIndex = 23;
+                    index = 23;
                     break;
                 case "lastClickCampaign":
-                    utmIndex = 24;
+                    index = 24;
                     break;
             }
-            var utmCount = new Dictionary<string, int>();
+            var chartData = new Dictionary<string, int>();
             var sr = new StreamReader(fileName);
-            var hstr = sr.ReadLine();
-            var str = hstr.Split(',');
+            var line = sr.ReadLine();
+            var lineArray = line.Split(',');
             while (true)
             {
-                hstr = sr.ReadLine();
-                if (hstr != null)
+                line = sr.ReadLine();
+                if (line != null)
                 {
-                    str = hstr.Split(',');
-                    if (str[utmIndex] == "")
-                        str[utmIndex] = "No data";
-                    if (!utmCount.ContainsKey(str[utmIndex]))
-                        utmCount.Add(str[utmIndex], 1);
+                    lineArray = line.Split(',');
+                    if (lineArray[index] == "")
+                        lineArray[index] = "No data";
+                    if (!chartData.ContainsKey(lineArray[index]))
+                        chartData.Add(lineArray[index], 1);
                     else
-                        utmCount[str[utmIndex]]++;
+                        chartData[lineArray[index]]++;
                 }
                 else
                     break;
             }
             sr.Close();
-            return utmCount;
+            return chartData;
         }
 
         void DrawUtmSourcePie()
         {
-            var utmCount = FindUtmsCount("referral-traffic.csv", "source");
+            var chartData = FindChartData("referral-traffic.csv", "source");
             chartUtmSource.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartUtmSource.Width = tabsStatistics.Width - 5;
             chartUtmSource.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartUtmSource.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
@@ -154,8 +157,8 @@ namespace StepicAnalytics
             chartUtmMedium.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartUtmMedium.Width = tabsStatistics.Width - 5;
             chartUtmMedium.Height = tabsStatistics.Height - 5;
-            var utmCount = FindUtmsCount("referral-traffic.csv", "medium");
-            foreach (var mark in utmCount)
+            var chartData = FindChartData("referral-traffic.csv", "medium");
+            foreach (var mark in chartData)
                 chartUtmMedium.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
@@ -164,8 +167,8 @@ namespace StepicAnalytics
             chartUtmCampaign.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartUtmCampaign.Width = tabsStatistics.Width - 5;
             chartUtmCampaign.Height = tabsStatistics.Height - 5;
-            var utmCount = FindUtmsCount("referral-traffic.csv", "campaign");
-            foreach (var mark in utmCount)
+            var chartData = FindChartData("referral-traffic.csv", "campaign");
+            foreach (var mark in chartData)
                 chartUtmCampaign.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
@@ -182,62 +185,72 @@ namespace StepicAnalytics
 
         void DrawFirstClickUtmSourcePie()
         {
-            var utmCount = FindUtmsCount("payments.csv", "firstClickSource");
+            var chartData = FindChartData("payments.csv", "firstClickSource");
             chartFirstUtmSource.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartFirstUtmSource.Width = tabsStatistics.Width - 5;
             chartFirstUtmSource.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartFirstUtmSource.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
         void DrawFirstClickUtmMediumPie()
         {
-            var utmCount = FindUtmsCount("payments.csv", "firstClickMedium");
+            var chartData = FindChartData("payments.csv", "firstClickMedium");
             chartFirstUtmMedium.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartFirstUtmMedium.Width = tabsStatistics.Width - 5;
             chartFirstUtmMedium.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartFirstUtmMedium.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
         void DrawFirstClickUtmCampaignPie()
         {
-            var utmCount = FindUtmsCount("payments.csv", "firstClickCampaign");
+            var chartData = FindChartData("payments.csv", "firstClickCampaign");
             chartFirstUtmCampaign.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartFirstUtmCampaign.Width = tabsStatistics.Width - 5;
             chartFirstUtmCampaign.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartFirstUtmCampaign.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
         void DrawLastClickUtmSourcePie()
         {
-            var utmCount = FindUtmsCount("payments.csv", "lastClickSource");
+            var chartData = FindChartData("payments.csv", "lastClickSource");
             chartLastUtmSource.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartLastUtmSource.Width = tabsStatistics.Width - 5;
             chartLastUtmSource.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartLastUtmSource.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
         void DrawLastClickUtmMediumPie()
         {
-            var utmCount = FindUtmsCount("payments.csv", "lastClickMedium");
+            var chartData = FindChartData("payments.csv", "lastClickMedium");
             chartLastUtmMedium.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartLastUtmMedium.Width = tabsStatistics.Width - 5;
             chartLastUtmMedium.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartLastUtmMedium.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
         void DrawLastClickUtmCampaignPie()
         {
-            var utmCount = FindUtmsCount("payments.csv", "lastClickCampaign");
+            var chartData = FindChartData("payments.csv", "lastClickCampaign");
             chartLastUtmCampaign.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             chartLastUtmCampaign.Width = tabsStatistics.Width - 5;
             chartLastUtmCampaign.Height = tabsStatistics.Height - 5;
-            foreach (var mark in utmCount)
+            foreach (var mark in chartData)
                 chartLastUtmCampaign.Series[0].Points.AddXY(mark.Key, mark.Value);
+        }
+
+        void DrawSourcesPie()
+        {
+            var chartData = FindChartData("payments.csv", "sources");
+            chartSources.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            chartSources.Width = tabsStatistics.Width - 50;
+            chartSources.Height = tabsStatistics.Height - 50;
+            foreach (var mark in chartData)
+                chartSources.Series[0].Points.AddXY(mark.Key, mark.Value);
         }
 
         //универсальная фукция для построения графика, не понял как передать в нее элемент chart, который нам нужен
@@ -261,6 +274,7 @@ namespace StepicAnalytics
             DrawLastClickUtmSourcePie();
             DrawLastClickUtmMediumPie();
             DrawLastClickUtmCampaignPie();
+            DrawSourcesPie();
         }
 
         void FindUsersStaistics()

@@ -59,6 +59,9 @@ namespace StepicAnalytics
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.textBoxReferralTrafficText = new System.Windows.Forms.TextBox();
             this.textBoxReferralTrafficData = new System.Windows.Forms.TextBox();
             this.textBoxPaymentsText = new System.Windows.Forms.TextBox();
@@ -86,6 +89,8 @@ namespace StepicAnalytics
             this.chartLastUtmMedium = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.lastClickUtmCampaign = new System.Windows.Forms.TabPage();
             this.chartLastUtmCampaign = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.Sources = new System.Windows.Forms.TabPage();
+            this.chartSources = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabsStatistics.SuspendLayout();
             this.viewsCount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartViews)).BeginInit();
@@ -107,6 +112,8 @@ namespace StepicAnalytics
             ((System.ComponentModel.ISupportInitialize)(this.chartLastUtmMedium)).BeginInit();
             this.lastClickUtmCampaign.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartLastUtmCampaign)).BeginInit();
+            this.Sources.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSources)).BeginInit();
             this.SuspendLayout();
             // 
             // textBoxReferralTrafficText
@@ -172,6 +179,7 @@ namespace StepicAnalytics
             this.tabsStatistics.Controls.Add(this.lastClickUtmSource);
             this.tabsStatistics.Controls.Add(this.lastClickUtmMedium);
             this.tabsStatistics.Controls.Add(this.lastClickUtmCampaign);
+            this.tabsStatistics.Controls.Add(this.Sources);
             this.tabsStatistics.Location = new System.Drawing.Point(12, 12);
             this.tabsStatistics.Name = "tabsStatistics";
             this.tabsStatistics.SelectedIndex = 0;
@@ -441,6 +449,32 @@ namespace StepicAnalytics
             this.chartLastUtmCampaign.TabIndex = 0;
             this.chartLastUtmCampaign.Text = "chart4";
             // 
+            // Sources
+            // 
+            this.Sources.Controls.Add(this.chartSources);
+            this.Sources.Location = new System.Drawing.Point(4, 22);
+            this.Sources.Name = "Sources";
+            this.Sources.Size = new System.Drawing.Size(1052, 548);
+            this.Sources.TabIndex = 10;
+            this.Sources.Text = "Sources";
+            this.Sources.UseVisualStyleBackColor = true;
+            // 
+            // chartSources
+            // 
+            chartArea11.Name = "ChartArea1";
+            this.chartSources.ChartAreas.Add(chartArea11);
+            legend11.Name = "Legend1";
+            this.chartSources.Legends.Add(legend11);
+            this.chartSources.Location = new System.Drawing.Point(3, 3);
+            this.chartSources.Name = "chartSources";
+            series11.ChartArea = "ChartArea1";
+            series11.Legend = "Legend1";
+            series11.Name = "Series1";
+            this.chartSources.Series.Add(series11);
+            this.chartSources.Size = new System.Drawing.Size(300, 300);
+            this.chartSources.TabIndex = 0;
+            this.chartSources.Text = "chart1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -477,6 +511,8 @@ namespace StepicAnalytics
             ((System.ComponentModel.ISupportInitialize)(this.chartLastUtmMedium)).EndInit();
             this.lastClickUtmCampaign.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartLastUtmCampaign)).EndInit();
+            this.Sources.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartSources)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -511,6 +547,8 @@ namespace StepicAnalytics
         private System.Windows.Forms.DataVisualization.Charting.Chart chartLastUtmSource;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartLastUtmMedium;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartLastUtmCampaign;
+        private System.Windows.Forms.TabPage Sources;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSources;
     }
 }
 
