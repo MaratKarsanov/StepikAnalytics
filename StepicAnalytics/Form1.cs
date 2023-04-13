@@ -191,7 +191,7 @@ namespace StepicAnalytics
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Environment.CurrentDirectory = Environment.CurrentDirectory.Replace("\\bin\\Debug", "\\file");
+            Environment.CurrentDirectory = Environment.CurrentDirectory.Replace("\\bin\\Debug", "\\files");
             FindUsersStaistics();
             textBoxRefundsData.Text = Convert.ToString(FindRefundsCount("payments.csv"));
             DrawPies();
