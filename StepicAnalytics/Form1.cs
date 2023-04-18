@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace StepicAnalytics
 {
@@ -21,57 +22,101 @@ namespace StepicAnalytics
         {
             var dict = new Dictionary<string, string>();
             var sr = new StreamReader(fileName);
-            var hstr = sr.ReadLine();
-            var str = hstr.Split(',');
+            var line = sr.ReadLine();
+            var lineArray = line.Split(',');
             while (true)
             {
-                hstr = sr.ReadLine();
-                if (hstr != null)
-                    str = hstr.Split(',');
+                line = sr.ReadLine();
+                if (!string.IsNullOrEmpty(line))
+                    lineArray = line.Split(',');
                 else
                     break;
-                if (!dict.ContainsKey(str[0]))
-                    dict.Add(str[0], str[1] + str[2]);
+                if (!dict.ContainsKey(lineArray[0]))
+                    dict.Add(lineArray[0], lineArray[1] + lineArray[2]);
             }
             sr.Close();
             return dict;
         }
 
-        int FindRefundsCount(string fileName)
+        Dictionary<string, string> FindUniqueUsers(string fileName, string sourceName)
+        {
+            var dict = new Dictionary<string, string>();
+            var sr = new StreamReader(fileName);
+            var line = sr.ReadLine();
+            var lineArray = line.Split(',');
+            var index = 0;
+            if (fileName == "referral-traffic.csv")
+                index = 6;
+            else
+                index = 17;
+            while (true)
+            {
+                line = sr.ReadLine();
+                if (!string.IsNullOrEmpty(line))
+                    lineArray = line.Split(',');
+                else
+                    break;
+                if (!dict.ContainsKey(lineArray[0]) && lineArray[index] == sourceName)
+                    dict.Add(lineArray[0], lineArray[1] + lineArray[2]);
+            }
+            sr.Close();
+            return dict;
+        }
+
+        int FindRefunds(string fileName)
         {
             var sr = new StreamReader(fileName);
-            var hstr = sr.ReadLine();
-            var str = hstr.Split(',');
+            var line = sr.ReadLine();
+            var lineArray = line.Split(',');
             var refundsCount = 0;
             while (true)
             {
-                hstr = sr.ReadLine();
-                if (hstr != null)
-                    str = hstr.Split(',');
+                line = sr.ReadLine();
+                if (!string.IsNullOrEmpty(line))
+                    lineArray = line.Split(',');
                 else
                     break;
-                if (str[11] != "")
+                if (lineArray[11] != "")
                     refundsCount++;
             }
             return refundsCount;
         }
 
-        Dictionary<string, int> FindDayViewsCount(string fileName)
+        int FindRefunds(string fileName, string sourceName)
+        {
+            var sr = new StreamReader(fileName);
+            var line = sr.ReadLine();
+            var lineArray = line.Split(',');
+            var refundsCount = 0;
+            while (true)
+            {
+                line = sr.ReadLine();
+                if (!string.IsNullOrEmpty(line))
+                    lineArray = line.Split(',');
+                else
+                    break;
+                if (lineArray[11] != "" && lineArray[17] == sourceName)
+                    refundsCount++;
+            }
+            return refundsCount;
+        }
+
+        Dictionary<string, int> FindDayViews(string fileName)
         {
             var sr = new StreamReader(fileName);
             var dayViews = new Dictionary<string, int>();
-            var hstr = sr.ReadLine();
-            var str = hstr.Split(',');
+            var line = sr.ReadLine();
+            var lineArray = line.Split(',');
             while (true)
             {
-                hstr = sr.ReadLine();
-                if (hstr != null)
+                line = sr.ReadLine();
+                if (!string.IsNullOrEmpty(line))
                 {
-                    str = hstr.Split(',');
-                    if (!dayViews.ContainsKey(str[3].Split(' ')[0]))
-                        dayViews.Add(str[3].Split(' ')[0], 1);
+                    lineArray = line.Split(',');
+                    if (!dayViews.ContainsKey(lineArray[3].Split(' ')[0]))
+                        dayViews.Add(lineArray[3].Split(' ')[0], 1);
                     else
-                        dayViews[str[3].Split(' ')[0]]++;
+                        dayViews[lineArray[3].Split(' ')[0]]++;
                 }
                 else
                     break;
@@ -89,7 +134,7 @@ namespace StepicAnalytics
                     index = 16;
                     break;
                 case "source":
-                    index = 6; 
+                    index = 6;
                     break;
                 case "medium":
                     index = 7;
@@ -123,7 +168,7 @@ namespace StepicAnalytics
             while (true)
             {
                 line = sr.ReadLine();
-                if (line != null)
+                if (!string.IsNullOrEmpty(line))
                 {
                     lineArray = line.Split(',');
                     if (lineArray[index] == "")
@@ -143,58 +188,110 @@ namespace StepicAnalytics
         void DrawViewsCount()
         {
             chartViews.Series[0].Points.Clear();
-            chartViews.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
+            chartViews.Series[0].ChartType = SeriesChartType.Column;
             chartViews.Left = 0;
             chartViews.Top = 0;
             chartViews.Width = tabsStatistics.Width - 5;
             chartViews.Height = tabsStatistics.Height - 5;
-            var dayViews = FindDayViewsCount("referral-traffic.csv");
-            foreach(var day in dayViews)
+            var dayViews = FindDayViews("referral-traffic.csv");
+            foreach (var day in dayViews)
                 chartViews.Series[0].Points.AddXY(day.Key, day.Value);
         }
 
-        void DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType chartType,
-            System.Windows.Forms.DataVisualization.Charting.Chart chart,
-            string fileName, 
-            string columnName)
+        Dictionary<string, int> SortDictionaryDecreasing(Dictionary<string, int> dictionary)
         {
-            var chartData = FindChartData(fileName, columnName);
+            var list = new List<int>();
+            var chartDataSorted = new Dictionary<string, int>();
+            foreach (var mark in dictionary)
+            {
+                list.Add(mark.Value);
+            }
+            list.Sort();
+            list.Reverse();
+            for (var i = 0; i < list.Count; i++)
+            {
+                foreach (var mark in dictionary)
+                {
+                    if (list[i] == mark.Value)
+                    {
+                        chartDataSorted.Add(mark.Key, mark.Value);
+                        dictionary.Remove(mark.Key);
+                        break;
+                    }
+                }
+            }
+            return chartDataSorted;
+        }
+
+        void DrawChart(SeriesChartType chartType, Chart chart, string fileName, string columnName)
+        {
+            var chartData = SortDictionaryDecreasing(FindChartData(fileName, columnName));
             chart.Series[0].ChartType = chartType;
             chart.Left = 0;
             chart.Top = 0;
             chart.Width = tabsStatistics.Width - 50;
             chart.Height = tabsStatistics.Height - 50;
+
+            var list = new List<int>();
             foreach (var mark in chartData)
-                chart.Series[0].Points.AddXY(mark.Key, mark.Value);
+            {
+                list.Add(mark.Value);
+            }
+            list.Sort();
+            list.Reverse();
+            var s = 0.0;
+            for (var i = 0; i < list.Count; i++)
+            {
+                s += list[i];
+            }
+
+            foreach (var mark in chartData)
+            {
+                chart.Series[0].Points.AddXY(mark.Key + ": " + Convert.ToString(mark.Value) + " - " + Convert.ToString(Math.Round(mark.Value / s * 100, 2)) + "%", mark.Value);
+                //chart.Series[0].Legend = "123";
+            }
         }
 
         void DrawPies()
         {
             DrawViewsCount();
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartUtmSource, "referral-traffic.csv", "source");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartUtmMedium, "referral-traffic.csv", "medium");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartUtmCampaign, "referral-traffic.csv", "campaign");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartFirstUtmSource, "payments.csv", "firstClickSource");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartFirstUtmMedium, "payments.csv", "firstClickMedium");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartFirstUtmCampaign, "payments.csv", "firstClickCampaign");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartLastUtmSource, "payments.csv", "lastClickSource");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartLastUtmMedium, "payments.csv", "lastClickMedium");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartLastUtmCampaign, "payments.csv", "lastClickCampaign");
-            DrawChart(System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie, chartSources, "payments.csv", "sources");
+            DrawChart(SeriesChartType.Pie, chartUtmSource, "referral-traffic.csv", "source");
+            DrawChart(SeriesChartType.Pie, chartUtmMedium, "referral-traffic.csv", "medium");
+            DrawChart(SeriesChartType.Pie, chartUtmCampaign, "referral-traffic.csv", "campaign");
+            DrawChart(SeriesChartType.Pie, chartFirstUtmSource, "payments.csv", "firstClickSource");
+            DrawChart(SeriesChartType.Pie, chartFirstUtmMedium, "payments.csv", "firstClickMedium");
+            DrawChart(SeriesChartType.Pie, chartFirstUtmCampaign, "payments.csv", "firstClickCampaign");
+            DrawChart(SeriesChartType.Pie, chartLastUtmSource, "payments.csv", "lastClickSource");
+            DrawChart(SeriesChartType.Pie, chartLastUtmMedium, "payments.csv", "lastClickMedium");
+            DrawChart(SeriesChartType.Pie, chartLastUtmCampaign, "payments.csv", "lastClickCampaign");
+            DrawChart(SeriesChartType.Pie, chartSources, "payments.csv", "sources");
         }
 
         void FindUsersStaistics()
         {
             textBoxReferralTrafficData.Text = Convert.ToString(FindUniqueUsers("referral-traffic.csv").Count);
             textBoxPaymentsData.Text = Convert.ToString(FindUniqueUsers("payments.csv").Count);
+            textBoxRefundsData.Text = Convert.ToString(FindRefunds("payments.csv"));
+            textBoxVkReferralTrafficData.Text = Convert.ToString(FindUniqueUsers("referral-traffic.csv", "vk").Count);
+            textBoxTgReferralTrafficData.Text = Convert.ToString(FindUniqueUsers("referral-traffic.csv", "tg").Count);
+            textBoxMauticReferralTrafficData.Text = Convert.ToString(FindUniqueUsers("referral-traffic.csv", "stepik_email_mautic").Count);
+            textBoxSmmReferralTrafficData.Text = Convert.ToString(FindUniqueUsers("referral-traffic.csv", "stepik_vk_smm").Count);
+            textBoxVkPaymentsData.Text = Convert.ToString(FindUniqueUsers("payments.csv", "vk").Count);
+            textBoxTgPaymentsData.Text = Convert.ToString(FindUniqueUsers("payments.csv", "tg").Count);
+            textBoxMauticPaymentsData.Text = Convert.ToString(FindUniqueUsers("payments.csv", "stepik_email_mautic").Count);
+            textBoxSmmPaymentsData.Text = Convert.ToString(FindUniqueUsers("payments.csv", "stepik_vk_smm").Count);
+            textBoxVkRefundsData.Text = Convert.ToString(FindRefunds("payments.csv", "vk"));
+            textBoxTgRefundsData.Text = Convert.ToString(FindRefunds("payments.csv", "tg"));
+            textBoxMauticRefundsData.Text = Convert.ToString(FindRefunds("payments.csv", "stepik_email_mautic"));
+            textBoxSmmRefundsData.Text = Convert.ToString(FindRefunds("payments.csv", "stepik_vk_smm"));
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             Environment.CurrentDirectory = Environment.CurrentDirectory.Replace("\\bin\\Debug", "\\files");
             FindUsersStaistics();
-            textBoxRefundsData.Text = Convert.ToString(FindRefundsCount("payments.csv"));
             DrawPies();
+            //textBoxReferralTrafficText.Location = new Point(, 592);
         }
     }
 }
